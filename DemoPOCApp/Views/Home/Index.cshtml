@@ -48,28 +48,39 @@
 
 <div class="row">
     <div class="col-12">
-        @(Html.Kendo().Grid <DemoPOCApp.Models.OrderViewModel>()
-                            .Name("grid")
-                            .Columns(columns =>
-                            {
-                                columns.Bound(p => p.OrderID).Filterable(false);
-                                columns.Bound(p => p.Freight);
-                                columns.Bound(p => p.OrderDate).Format("{0:MM/dd/yyyy}");
-                                columns.Bound(p => p.ShipName);
-                                columns.Bound(p => p.ShipCity);
-                            })
-                            .Pageable()
-                            .Sortable()
-                            .Scrollable()
-                            .Groupable()
-                            .Filterable()
-                            .HtmlAttributes(new { style = "height:550px;" })
-                            .DataSource(dataSource => dataSource
-                                .Ajax()
-                                .PageSize(20)
-                                .Read(read => read.Action("Orders_Read", "Grid"))
-                             )
-        )
+        <kendo-grid name="grid" height="550">
+            <datasource type="DataSourceTagHelperType.Ajax" page-size="10">
+                <transport>
+                    <read url="@Url.Action("Orders_Read", "Grid" )" />
+                </transport>
+                <schema>
+                    <model>
+                        <fields>
+                            <field name="OrderDate" type="date"></field>
+                        </fields>
+                    </model>
+                </schema>
+            </datasource>
+            <toolbar>
+                <toolbar-button name="search"></toolbar-button>
+            </toolbar>
+            <groupable enabled="true" />
+            <sortable enabled="true" />
+            <filterable enabled="true" mode="row" />
+            <search fields-extended="@(new object[]
+                                        {new {Name = "OrderID", Operator = "eq"},
+                                         new {Name = "ShipName", Operator = "contains"},
+                                         new {Name = "ShipCity", Operator = "contains"}})">
+            </search>
+            <pageable button-count="5" refresh="true" page-sizes="new int[] { 5, 10, 20 }">
+            </pageable>
+            <columns>
+                <column field="OrderID" width="150" />
+                <column field="OrderDate" title="Order Date" format="{0:MM/dd/yyyy}" width="200" />
+                <column field="ShipName" title="Ship Name" width="400" />
+                <column field="ShipCity" title="Ship City" width="350" />
+            </columns>
+        </kendo-grid>
     </div>
 </div>
 
