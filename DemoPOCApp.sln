@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EF2F77F4-AB33-4C92-B72E-494A3670E8B0}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoPOCApp", "DemoPOCApp\DemoPOCApp.csproj", "{B7427EBE-9526-4902-AAD1-54457082D907}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7427EBE-9526-4902-AAD1-54457082D907}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7427EBE-9526-4902-AAD1-54457082D907}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7427EBE-9526-4902-AAD1-54457082D907}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7427EBE-9526-4902-AAD1-54457082D907}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5EF7D813-693E-44F3-A12D-ACA9EFF92F99}
+	EndGlobalSection
+EndGlobal
