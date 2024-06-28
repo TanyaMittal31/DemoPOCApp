@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.*" />
-    <PackageReference Include="Telerik.UI.for.AspNet.Core.Trial" Version="2023.3.1114" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -19,6 +18,12 @@
     <Content Remove="Templates\**" />
     <EmbeddedResource Remove="Templates\**" />
     <None Remove="Templates\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Kendo.Mvc">
+      <HintPath>..\..\..\DemoPOCApp\Libraries\Kendo.Mvc 2.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties UseCdnSupport="False" /></VisualStudio></ProjectExtensions>
