@@ -55,6 +55,21 @@ namespace CustomEditingApp.Controllers
             return Json(new[] { product });
         }
 
+        [HttpPost]
+        public ActionResult AddProduct([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")] IEnumerable<Product> products)
+        {
+            var results = new List<Product>();
+            if (products != null && ModelState.IsValid)
+            {
+                foreach (var product in products)
+                {
+                    //productService.Create(product);
+                    _products.Add(product);
+                }
+            }
+            return Json(results.ToDataSourceResult(request, ModelState));
+        }
+
         [AcceptVerbs("Post")]
         public async Task<IActionResult> PopupUpdateProduct([DataSourceRequest] DataSourceRequest request, Product product)
         {

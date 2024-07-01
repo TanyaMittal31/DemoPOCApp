@@ -7,14 +7,17 @@
 <kendo-grid name="grid" id="RadGrid1">
     <editable mode="incell" />
     <columns>
-        <column field="ProductID" title="Product ID" />
+        
         <column field="ProductName" title="Product Name" />
         <column field="UnitPrice" title="Unit Price" />
         <column field="UnitsInStock" title="Units In Stock" />
+        
     </columns>
+
     <datasource type="DataSourceTagHelperType.Ajax" batch="true">
         <transport>
             <read url="@Url.Action("ProductsRead", "Products")" />
+            <create url="@Url.Action("AddProduct", "Products")" type="POST" content-type="application/json" />
             <update url="@Url.Action("UpdateProduct", "Products")" type="POST" content-type="application/json" />
         </transport>
         <schema data="Data">
@@ -28,10 +31,81 @@
             </model>
         </schema>
     </datasource>
+    <toolbar>
+        <toolbar-button name="create"></toolbar-button>
+    </toolbar>
+    <groupable enabled="true" />
+    <sortable enabled="true" />
+    <filterable enabled="true" mode="row" />
+    <search fields-extended="@(new object[]
+                                        {new {Name = "ProductID", Operator = "eq"},
+                                         new {Name = "ProductName", Operator = "contains"},
+                                         new {Name = "UnitPrice", Operator = "contains"},
+                                         new {Name = "UnitsInStock", Operator = "contains"}})">
+    </search>
+    <pageable button-count="5" refresh="true" page-sizes="new int[] { 5, 10, 20 }">
+    </pageable>
+    
 </kendo-grid>
 
+                
 
-<kendo-grid name="grid" id="RadGrid2" style="margin-top=5rem;">
+<h2>Products</h2>
+<kendo-grid name="grid2" id="RadGrid2">
+    <editable mode="popup" />
+    <columns>
+        
+        <column field="ProductName" title="Product Name" />
+        <column field="UnitPrice" title="Unit Price" />
+        <column field="UnitsInStock" title="Units In Stock" />
+        <column width="200">
+            <commands>
+                <column-command text="Edit" name="edit"></column-command>
+            </commands>
+        </column>
+    </columns>
+    <datasource type="DataSourceTagHelperType.Ajax" batch="true">
+        <transport>
+            <read url="@Url.Action("ProductsRead", "Products")" />
+            <update url="@Url.Action("PopupUpdateProduct", "Products")" type="POST" content-type="application/json" />
+            <create url="@Url.Action("PopupUpdateProduct", "Products")" />
+        </transport>
+        <schema data="Data">
+            <model id="ProductID">
+                <fields>
+                    <field name="ProductID" type="number" editable="false" />
+                    <field name="ProductName" type="string" />
+                    <field name="UnitPrice" type="number" />
+                    <field name="UnitsInStock" type="number" />
+                </fields>
+            </model>
+        </schema>
+    </datasource>
+    <toolbar>
+        <toolbar-button name="create"></toolbar-button>
+    </toolbar>
+
+    <groupable enabled="true" />
+    <sortable enabled="true" />
+    <filterable enabled="true" mode="row" />
+    <search fields-extended="@(new object[]
+                                        {new {Name = "ProductID", Operator = "eq"},
+                                         new {Name = "ProductName", Operator = "contains"},
+                                         new {Name = "UnitPrice", Operator = "contains"},
+                                         new {Name = "UnitsInStock", Operator = "contains"}})">
+    </search>
+    <pageable button-count="5" refresh="true" page-sizes="new int[] { 5, 10, 20 }">
+    </pageable>
+    <columns>
+        <column field="ProductName" title="Product Name" format="{0:MM/dd/yyyy}" width="200" />
+        <column field="UnitPrice" title="Units Price" width="400" />
+        <column field="UnitsInStock" title="Units In Stock" width="350" />
+    </columns>
+
+</kendo-grid>
+
+<h2>Products</h2>
+<kendo-grid name="grid3" id="RadGrid3" style="margin-top:5rem;">
     <editable mode="popup" />
     <columns>
         <column field="ProductID" title="Product ID" />
@@ -63,6 +137,7 @@
 </kendo-grid>
 
 <script>
+    
     $(document).ready(function () {
         var grid = $("#RadGrid1").data("kendoGrid");
         var grid2 = $("#RadGrid2").data("kendoGrid");
