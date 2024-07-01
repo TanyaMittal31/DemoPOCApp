@@ -1,87 +1,33 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Kendo.Mvc.UI
+@model IEnumerable<DemoPOCApp.Models.Order>
+@{
+    ViewBag.Title = "Orders";
 }
 
+<h2>Orders</h2>
 
-
-
-<div class="placeholders mb-2">
-    <div class="row d-flex justify-content-start">
-        <div class="col-md-2 mb-3 placeholder">
-            <img class="img-fluid " alt="200x200" src="~/Images/200.png">
-        </div>
-        <div class="col-md-3">
-            <h2>Lorem ipsum dolor sit amet...</h2>
-            <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-                galley of type and scrambled it to make a type specimen book.
-            </p>
-            <p>
-                @(Html.Kendo().Button().Name("PrimaryButton").ThemeColor(ThemeColor.Primary).Content("Primary Button"))
-            </p>
-        </div>
-        <div class="col-md-3">
-            <h2>&nbsp;</h2>
-            <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-                galley of type and scrambled it to make a type specimen book.
-            </p>
-            <p>
-                @(Html.Kendo().Button().Name("TextButton").Content("Button"))
-            </p>
-        </div>
-        <div class="col-md-3">
-            <h2>&nbsp;</h2>
-            <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-                galley of type and scrambled it to make a type specimen book.
-            </p>
-            <p>
-                @(Html.Kendo().Button().Name("Button").Content("Button"))
-            </p>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-12">
-        <kendo-grid name="grid" height="550">
-            <datasource type="DataSourceTagHelperType.Ajax" page-size="10">
-                <transport>
-                    <read url="@Url.Action("Orders_Read", "Grid" )" />
-                </transport>
-                <schema>
-                    <model>
-                        <fields>
-                            <field name="OrderDate" type="date"></field>
-                        </fields>
-                    </model>
-                </schema>
-            </datasource>
-            <toolbar>
-                <toolbar-button name="search"></toolbar-button>
-            </toolbar>
-            <groupable enabled="true" />
-            <sortable enabled="true" />
-            <filterable enabled="true" mode="row" />
-            <search fields-extended="@(new object[]
-                                        {new {Name = "OrderID", Operator = "eq"},
-                                         new {Name = "ShipName", Operator = "contains"},
-                                         new {Name = "ShipCity", Operator = "contains"}})">
-            </search>
-            <pageable button-count="5" refresh="true" page-sizes="new int[] { 5, 10, 20 }">
-            </pageable>
-            <columns>
-                <column field="OrderID" width="150" />
-                <column field="OrderDate" title="Order Date" format="{0:MM/dd/yyyy}" width="200" />
-                <column field="ShipName" title="Ship Name" width="400" />
-                <column field="ShipCity" title="Ship City" width="350" />
-            </columns>
-        </kendo-grid>
-    </div>
-</div>
-
-
+@(Html.Kendo().Grid<DemoPOCApp.Models.Order>()
+    .Name("grid")
+    .Height(550)
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Read(read => read.Action("ProductsRead", "Grid"))
+        .PageSize(10)
+    )
+    .Groupable()
+    .Sortable()
+    .Filterable(ftb => ftb.Mode(GridFilterMode.Row))
+    .Pageable(p => p
+        .ButtonCount(5)
+        .Refresh(true)
+        .PageSizes(new int[] { 5, 10, 20 })
+    )
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.OrderID).Width(150);
+        columns.Bound(o => o.OrderDate).Title("Order Date").Format("{0:MM/dd/yyyy}").Width(200);
+        columns.Bound(o => o.ShipName).Title("Ship Name").Width(400);
+        columns.Bound(o => o.ShipCity).Title("Ship City").Width(350);
+    })
+    .ToolBar(toolbar => toolbar.Search())
+)

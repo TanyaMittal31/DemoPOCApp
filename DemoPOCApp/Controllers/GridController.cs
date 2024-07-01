@@ -1,4 +1,5 @@
-﻿using DemoPOCApp.Models;
+﻿using DemoPOCApp.Data;
+using DemoPOCApp.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
@@ -6,11 +7,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace DemoPOCApp.Controllers
 {
     public class GridController : Controller
     {
+        private readonly ApplicationDbContext _dbContext;
+
+        public GridController(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
         public ActionResult Orders_Read([DataSourceRequest] DataSourceRequest request)
         {
             var result = Enumerable.Range(0, 50).Select(i => new OrderViewModel
@@ -24,6 +32,25 @@ namespace DemoPOCApp.Controllers
 
             var dsResult = result.ToDataSourceResult(request);
             return Json(dsResult);
+            //var orders = _dbContext.Orders.Select(o => new
+            //{
+            //    o.OrderID,
+            //    o.OrderDate,
+            //    o.ShipName,
+            //    o.ShipCity
+            //});
+
+            //return Json(orders.ToDataSourceResult(request), System.Web.Mvc.JsonRequestBehavior.AllowGet);
+        }
+
+        public IActionResult ProductsRead([DataSourceRequest] DataSourceRequest request)
+        {
+
+            var result = _dbContext.Orders.ToDataSourceResult(request);
+            return Json(new
+            {
+                Data = result.Data,
+            });
         }
     }
 }
