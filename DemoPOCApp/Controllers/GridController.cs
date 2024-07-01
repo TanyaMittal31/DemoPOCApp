@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using static NuGet.Packaging.PackagingConstants;
 
@@ -51,6 +52,22 @@ namespace DemoPOCApp.Controllers
             {
                 Data = result.Data,
             });
+        }
+
+        [HttpPost]
+        public IActionResult Orders_Destroy([DataSourceRequest] DataSourceRequest request, Order order)
+        {
+            if (ModelState.IsValid)
+            {
+                var entity = _dbContext.Orders.FirstOrDefault(o => o.OrderID == order.OrderID);
+                if (entity != null)
+                {
+                    _dbContext.Orders.Remove(entity);
+                    _dbContext.SaveChanges();  // Save changes to commit deletion
+                }
+            }
+
+            return Json(new[] { order }.ToDataSourceResult(request, ModelState));
         }
     }
 }

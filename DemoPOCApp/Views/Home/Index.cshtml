@@ -8,26 +8,72 @@
 
 @(Html.Kendo().Grid<DemoPOCApp.Models.Order>()
     .Name("grid")
-    .Height(550)
-    .DataSource(dataSource => dataSource
-        .Ajax()
-        .Read(read => read.Action("ProductsRead", "Grid"))
-        .PageSize(10)
-    )
-    .Groupable()
-    .Sortable()
-    .Filterable(ftb => ftb.Mode(GridFilterMode.Row))
-    .Pageable(p => p
-        .ButtonCount(5)
-        .Refresh(true)
-        .PageSizes(new int[] { 5, 10, 20 })
-    )
     .Columns(columns =>
     {
         columns.Bound(o => o.OrderID).Width(150);
         columns.Bound(o => o.OrderDate).Title("Order Date").Format("{0:MM/dd/yyyy}").Width(200);
         columns.Bound(o => o.ShipName).Title("Ship Name").Width(400);
         columns.Bound(o => o.ShipCity).Title("Ship City").Width(350);
+        columns.Command(command =>
+        {
+            command.Destroy().Text("Delete");
+        }).Width(150);
     })
-    .ToolBar(toolbar => toolbar.Search())
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(model => model.Id(o => o.OrderID))
+        .Read(read => read.Action("ProductsRead", "Grid"))
+        .Destroy(destroy => destroy.Action("Orders_Destroy", "Grid"))
+        .PageSize(10)
+    )
+    .Pageable(pageable => pageable
+        .ButtonCount(5)
+        .Refresh(true)
+        .PageSizes(new int[] { 5, 10, 20 })
+    )
+    .ToolBar(toolbar => toolbar.Create())
 )
+
+<div id="deleteConfirmation" style="display:none;">
+    Are you sure you want to delete this record?
+</div>
+
+@section Scripts {
+    @(Html.Kendo().Dialog()
+            .Name("deleteConfirmationDialog")
+            .Title("Confirm Delete")
+            .Content("Are you sure you want to delete this record?")
+            .Visible(false)
+            .Actions(actions =>
+            {
+                actions.Add().Text("Yes").Action("onConfirmDelete");
+                actions.Add().Text("No").Action("onCancelDelete");
+            })
+        )
+
+    <script>
+        var currentItem;
+
+        function onConfirmDelete(e) {
+            var grid = $("#grid").data("kendoGrid");
+            grid.dataSource.remove(currentItem);
+            grid.dataSource.sync();
+            $("#deleteConfirmationDialog").data("kendoDialog").close();
+        }
+
+        function onCancelDelete(e) {
+            $("#deleteConfirmationDialog").data("kendoDialog").close();
+        }
+
+        $(document).ready(function () {
+            var grid = $("#grid").data("kendoGrid");
+
+            grid.table.on("click", ".k-grid-delete", function (e) {
+                e.preventDefault();
+                var tr = $(this).closest("tr");
+                currentItem = grid.dataItem(tr);
+                $("#deleteConfirmationDialog").data("kendoDialog").open();
+            });
+        });
+    </script>
+}
