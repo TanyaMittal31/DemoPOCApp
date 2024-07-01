@@ -2,6 +2,74 @@
 @model IEnumerable<Product>
 @addTagHelper *, Kendo.Mvc
 
+
+<!-- Navigation Control-->
+
+<style>
+    .navbar {
+        overflow: hidden;
+        background-color: #333;
+    }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+            .navbar a:hover {
+                background-color: #ddd;
+                color: black;
+            }
+
+    .content {
+        padding: 20px;
+    }
+
+    h2 {
+        margin-top: 1rem;
+    }
+</style>
+<div id="popupWindow" style="display:none;">
+    <div id="popupContent"></div>
+</div>
+<script>
+    $(document).ready(function () {
+        isEditing = false;
+
+        // Initialize Kendo UI Window
+        var editWarningPopup = $("#editWarningPopup").kendoWindow({
+            width: "400px",
+            title: "Warning",
+            visible: false,
+            actions: ["Close"]
+        }).data("kendoWindow");
+
+        // Handle navbar link clicks
+        $(".nav-link").on("click", function (e) {
+            if (isEditing) {
+                console.log("cleeeee");
+                e.preventDefault();
+                editWarningPopup.center().open();
+            }
+        });
+    });
+</script>
+<div id="editWarningPopup" style="display:none;">
+    <div id="editWarningContent">Finish the editing before switching.</div>
+</div>
+<div class="navbar">
+    <a href="#" class="nav-link" data-modal-content="Not Init Yet.">Home</a>
+    <a href="#" class="nav-link" data-modal-content="Not Init Yet.">Products</a>
+    <a href="#" class="nav-link" data-modal-content="Not Init Yet.">About</a>
+    <a href="#" class="nav-link" data-modal-content="Not Init Yet.">Contact</a>
+</div>
+
+
+
 <h2>Products</h2>
 
 <kendo-grid name="grid" id="RadGrid1">
@@ -152,11 +220,31 @@
             setTimeout(function () {
                 grid.dataSource.sync();
             });
+            isEditing = false;
+            console.log("Editing ended: ", isEditing);
         });
 
         // Handle errors
         grid.bind("error", function (e) {
             alert("An error occurred: " + e.errors);
+        });
+
+        grid.bind("edit", function (e) {
+            isEditing = true;
+            console.log("Editing started: ", isEditing);
+        });
+
+        grid.bind("cancel", function (e) {
+            isEditing = false;
+            console.log("Editing cancelded: ", isEditing);
+        });
+        grid2.bind("cancel", function (e) {
+            isEditing = false;
+            console.log("Editing cancelded: ", isEditing);
+        });
+        grid2.bind("edit", function (e) {
+            isEditing = true;
+            console.log("Editing started: ", isEditing);
         });
     });
 </script>
