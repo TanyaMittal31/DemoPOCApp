@@ -14,7 +14,6 @@ namespace DemoPOCApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly List<Order> _orders;
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             if (!string.IsNullOrEmpty(context.HttpContext.Request.Query["culture"]))
@@ -46,16 +45,6 @@ namespace DemoPOCApp.Controllers
         public IActionResult Error()
         {
             return View();
-        }
-
-        public IActionResult ProductsRead([DataSourceRequest] DataSourceRequest request)
-        {
-            /*return View(_products.ToDataSourceResult());*/
-            var result = _orders.ToDataSourceResult(request);
-            return Json(new
-            {
-                Data = result.Data,
-            });
         }
     }
 }
