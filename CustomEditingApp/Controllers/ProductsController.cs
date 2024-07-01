@@ -31,18 +31,46 @@ namespace CustomEditingApp.Controllers
             });
         }
 
+        //ProductID=1&models%5B0%5D.ProductName=Chai&models%5B0%5D.UnitPrice=19&models%5B0%5D.UnitsInStock=39
+
+        // ,int ProductID, string ProductName, decimal UnitPrice, int UnitsInStock
+
         [HttpPost]
-        public IActionResult UpdateProduct([DataSourceRequest] DataSourceRequest request, [FromBody] Product product)
+        public async Task<IActionResult> UpdateProduct([FromBody] Product product)
         {
-            var existingProduct = _products.FirstOrDefault(p => p.ProductID == product.ProductID);
-            if (existingProduct != null)
+            /*if (ProductID != null && ModelState.IsValid)
             {
-                existingProduct.ProductName = product.ProductName;
-                existingProduct.UnitPrice = product.UnitPrice;
-                existingProduct.UnitsInStock = product.UnitsInStock;
+                // Find the product in the list and update it
+                var existingProduct = _products.FirstOrDefault(p => p.ProductID == ProductID);
+                if (existingProduct != null)
+                {
+                    existingProduct.ProductName = ProductName;
+                    existingProduct.UnitPrice = UnitPrice;
+                    existingProduct.UnitsInStock = UnitsInStock;
+                }
             }
-            return Json(product);
+
+            var product = new Product { ProductID = ProductID, ProductName = ProductName, UnitPrice = UnitPrice, UnitsInStock = UnitsInStock };
+*/
+            return Json(new[] { product });
         }
+
+        [AcceptVerbs("Post")]
+        public async Task<IActionResult> PopupUpdateProduct([DataSourceRequest] DataSourceRequest request, Product product)
+        {
+            return Json(new[] { product });
+        }
+
+        
+        /*public ActionResult EditingPopup_Update([DataSourceRequest] DataSourceRequest request, ProductViewModel product)
+        {
+            if (product != null && ModelState.IsValid)
+            {
+                productService.Update(product);
+            }
+
+            return Json(new[] { product }.ToDataSourceResult(request, ModelState));
+        }*/
 
     }
 }

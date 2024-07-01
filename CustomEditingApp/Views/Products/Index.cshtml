@@ -1,10 +1,9 @@
 ﻿@using CustomEditingApp.Models
 @model IEnumerable<Product>
- 
 @addTagHelper *, Kendo.Mvc
- 
+
 <h2>Products</h2>
- 
+
 <kendo-grid name="grid" id="RadGrid1">
     <editable mode="incell" />
     <columns>
@@ -13,11 +12,10 @@
         <column field="UnitPrice" title="Unit Price" />
         <column field="UnitsInStock" title="Units In Stock" />
     </columns>
-    <datasource type="DataSourceTagHelperType.Ajax" batch="true"
-                on-error="errorHandler">
+    <datasource type="DataSourceTagHelperType.Ajax" batch="true">
         <transport>
             <read url="@Url.Action("ProductsRead", "Products")" />
-            <update url="@Url.Action("UpdateProduct", "Products")" />
+            <update url="@Url.Action("UpdateProduct", "Products")" type="POST" content-type="application/json" />
         </transport>
         <schema data="Data">
             <model id="ProductID">
@@ -31,24 +29,59 @@
         </schema>
     </datasource>
 </kendo-grid>
- 
+
+
+<kendo-grid name="grid" id="RadGrid2" style="margin-top=5rem;">
+    <editable mode="popup" />
+    <columns>
+        <column field="ProductID" title="Product ID" />
+        <column field="ProductName" title="Product Name" />
+        <column field="UnitPrice" title="Unit Price" />
+        <column field="UnitsInStock" title="Units In Stock" />
+        <column width="200">
+            <commands>
+                <column-command text="Edit" name="edit"></column-command>
+            </commands>
+        </column>
+    </columns>
+    <datasource type="DataSourceTagHelperType.Ajax" batch="true">
+        <transport>
+            <read url="@Url.Action("ProductsRead", "Products")" />
+            <update url="@Url.Action("PopupUpdateProduct", "Products")" type="POST" content-type="application/json" />
+        </transport>
+        <schema data="Data">
+            <model id="ProductID">
+                <fields>
+                    <field name="ProductID" type="number" editable="false" />
+                    <field name="ProductName" type="string" />
+                    <field name="UnitPrice" type="number" />
+                    <field name="UnitsInStock" type="number" />
+                </fields>
+            </model>
+        </schema>
+    </datasource>
+</kendo-grid>
 
 <script>
     $(document).ready(function () {
         var grid = $("#RadGrid1").data("kendoGrid");
+        var grid2 = $("#RadGrid2").data("kendoGrid");
 
-        grid.table.on("dblclick", "tr", function (e) {
-            grid.editRow($(this));
+        // Enable double-click to edit
+        grid.tbody.on("dblclick", "td", function (e) {
+            grid.editCell($(e.target));
         });
 
-        grid.table.on("focusout", "input", function () {
+        // Automatically save the data when the cell is edited
+        grid.bind("save", function (e) {
             setTimeout(function () {
-                grid.saveChanges();
-            }, 10);
+                grid.dataSource.sync();
+            });
+        });
+
+        // Handle errors
+        grid.bind("error", function (e) {
+            alert("An error occurred: " + e.errors);
         });
     });
-
-    function errorHandler(e) {
-        alert('An error occurred while processing your request: ' + e.errors);
-    }
 </script>
