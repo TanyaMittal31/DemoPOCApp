@@ -20,7 +20,8 @@ namespace DemoPOCApp.Controllers
         {
             _dbContext = dbContext;
         }
-        public ActionResult Orders_Read([DataSourceRequest] DataSourceRequest request)
+
+        /*public ActionResult Orders_Read([DataSourceRequest] DataSourceRequest request)
         {
             var result = Enumerable.Range(0, 50).Select(i => new OrderViewModel
             {
@@ -42,6 +43,11 @@ namespace DemoPOCApp.Controllers
             //});
 
             //return Json(orders.ToDataSourceResult(request), System.Web.Mvc.JsonRequestBehavior.AllowGet);
+        }*/
+
+        public IActionResult Index()
+        {
+            return View();
         }
 
         public IActionResult ProductsRead([DataSourceRequest] DataSourceRequest request)
@@ -64,6 +70,48 @@ namespace DemoPOCApp.Controllers
                 {
                     _dbContext.Orders.Remove(entity);
                     _dbContext.SaveChanges();  // Save changes to commit deletion
+                }
+            }
+
+            return Json(new[] { order }.ToDataSourceResult(request, ModelState));
+        }
+
+        [AcceptVerbs("Post")]
+        public async Task<IActionResult> EditingPopup_Create([DataSourceRequest] DataSourceRequest request, Order order)
+        {
+            if (ModelState.IsValid)
+            {
+                var entity = _dbContext.Orders.FirstOrDefault(o => o.OrderID == order.OrderID);
+                if (entity != null)
+                {
+                    _dbContext.Orders.Update(entity);
+                    await _dbContext.SaveChangesAsync();  // Save changes to commit deletion
+                }
+                else
+                {
+                    await _dbContext.Orders.AddAsync(order);
+                    await _dbContext.SaveChangesAsync();
+                }
+            }
+            /*if (product != null && ModelState.IsValid)
+            {
+               await _dbContext.Orders.AddAsync(product);
+               await _dbContext.SaveChangesAsync();
+            }*/
+
+            return Json(new[] { order }.ToDataSourceResult(request, ModelState));
+        }
+
+        [AcceptVerbs("Post")]
+        public async Task<IActionResult> EditingPopup_Update([DataSourceRequest] DataSourceRequest request, Order order)
+        {
+            if (ModelState.IsValid)
+            {
+                var entity = _dbContext.Orders.FirstOrDefault(o => o.OrderID == order.OrderID);
+                if (entity != null)
+                {
+                    _dbContext.Orders.Update(entity);
+                    await _dbContext.SaveChangesAsync();  // Save changes to commit deletion
                 }
             }
 

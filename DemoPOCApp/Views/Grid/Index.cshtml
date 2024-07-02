@@ -1,0 +1,77 @@
+﻿@addTagHelper *, Kendo.Mvc
+
+<kendo-grid name="RadGrid1" height="430" id="RadGrid1">
+    <datasource type="DataSourceTagHelperType.Ajax" page-size="10"
+                on-error="error_handler">
+        <schema data="Data" total="Total">
+            <model id="ProductID">
+                <fields>
+                    <field name="OrderID" type="int" editable="false"></field>
+                    <field name="OrderDate" type="DateTime"></field>
+                    <field name="ShipName" type="string"></field>
+                    <field name="ShipCity" type="string"></field>
+                    @* <field name="Discontinued" type="boolean"></field> *@
+                </fields>
+            </model>
+        </schema>
+        <transport>
+            <read url="@Url.Action("ProductsRead", "Grid")" />
+            @* <update url="@Url.Action("EditingPopup_Update", "Grid")" /> *@
+            <create url="@Url.Action("EditingPopup_Create", "Grid")" />
+            <destroy url="@Url.Action("Orders_Destroy", "Grid")" />
+        </transport>
+    </datasource>
+    <columns>
+        <column field="OrderDate" width="100" title="Order Date" />
+        <column field="ShipName" width="100" title="Ship Name" />
+        <column field="ShipCity" width="100" title="Ship City" />
+        @* <column field="Discontinued" width="100" /> *@
+        <column width="200">
+            <commands>
+                @* <column-command text="Edit" name="edit"></column-command> *@
+                <column-command text="Delete" name="destroy"></column-command>
+            </commands>
+        </column>
+    </columns>
+    <toolbar>
+        <toolbar-button name="create"></toolbar-button>
+    </toolbar>
+    <editable mode="popup" />
+    <pageable enabled="true" />
+    <sortable enabled="true" />
+    <scrollable enabled="true" />
+</kendo-grid>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        // Enable inline editing on double-click
+        $("#RadGrid1").on("dblclick", "tbody > tr > td", function (e) {
+            var grid = $("#RadGrid1").data("kendoGrid");
+            var cell = $(this).closest("td");
+            grid.options.editable = "inline";
+            grid.editCell(cell);
+            grid.options.editable = "popup";
+        });
+
+        // Auto-save on cell blur
+        $(document).on("focusout", "#RadGrid1 .k-edit-cell", function (e) {
+            var grid = $("#RadGrid1").data("kendoGrid");
+            grid.saveChanges();
+        });
+    });
+
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>
